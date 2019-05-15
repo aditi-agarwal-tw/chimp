@@ -8,7 +8,7 @@ import (
 	"github.com/aditi-agarwal-tw/chimp/utility"
 )
 
-const NumberOfSubCommands int = 2
+const NumberOfSubCommands int = 3
 
 func TestRootCommandInitialization(t *testing.T) {
 	utility.AssertEqual(t, rootCmd.Use, "chimp", "Invalid usage of version command")
@@ -32,6 +32,7 @@ func TestRootCommandInitFunc(t *testing.T) {
 		commandsSplice[i] = v
 	}
 	utility.AssertContains(t, commandsSplice, versionCmd, "Version command not added")
+	utility.AssertContains(t, commandsSplice, initCmd, "Init command not added")
 }
 
 func TestRootCommandExecution(t *testing.T) {
