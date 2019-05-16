@@ -1,8 +1,11 @@
 package cmd
 
 import (
-	"testing"
+	"bytes"
+	"errors"
+	"io"
 	"os"
+	"testing"
 
 	"github.com/aditi-agarwal-tw/chimp/utility"
 )
@@ -24,9 +27,10 @@ func TestInitCommandExecution(t *testing.T) {
 	argsSplice := []string{}
 	called := false
 	path := ""
-	ChimpRepInitializeFn = func(path_local string) {
+	ChimpRepInitializeFn = func(path_local string) error {
 		called = true
 		path = path_local
+		return nil
 	}
 
 	initCmd.Run(initCmd, argsSplice)
@@ -34,4 +38,27 @@ func TestInitCommandExecution(t *testing.T) {
 
 	utility.AssertEqual(t, called, true, "Chimp Repository not initialized")
 	utility.AssertEqual(t, path, dir, "Chimp Repository not initialized")
+}
+
+func TestInitCommandHandleError(t *testing.T) {
+	ChimpRepInitializeFn = func(path_local string) error {
+		return errors.New("some-error-occurred")
+	}
+	argsSplice := []string{}
+
+	old := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	initCmd.Run(initCmd, argsSplice)
+
+	w.Close()
+	os.Stdout = old
+
+	var buf bytes.Buffer
+	io.Copy(&buf, r)
+
+	utility.AssertSubString(t, buf.String(),
+		"An error occurred while creating .chimp directory: some-error-occurred",
+		"Invalid error message")
 }

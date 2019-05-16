@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"os"
 	"testing"
 
@@ -19,11 +20,12 @@ func TestChimpRepositoryInitialize(t *testing.T) {
 	utility.CreateDirectory = func(
 		pathLocal string,
 		dirNameLocal string,
-		forceLocal bool) {
+		forceLocal bool) error {
 		called = true
 		path = pathLocal
 		dirName = dirNameLocal
 		force = forceLocal
+		return nil
 	}
 
 	chimpRepoObj.Initialize(dir)
@@ -32,4 +34,18 @@ func TestChimpRepositoryInitialize(t *testing.T) {
 	utility.AssertEqual(t, path, dir, "Chimp Repository creation error")
 	utility.AssertEqual(t, dirName, ".chimp", "Chimp Repository creation error")
 	utility.AssertEqual(t, force, false, "Chimp Repository creation error")
+}
+
+func TestChimpRepositoryInitializeOnError(t *testing.T) {
+	utility.CreateDirectory = func(
+		pathLocal string,
+		dirNameLocal string,
+		forceLocal bool) error {
+		return errors.New("some-error-occurred")
+	}
+
+	err := chimpRepoObj.Initialize("some-dir")
+
+	utility.AssertEqual(t, err != nil, true, "Chimp Repository creation error")
+
 }

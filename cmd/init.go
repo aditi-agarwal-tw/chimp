@@ -26,5 +26,8 @@ var ChimpRepInitializeFn = ChimpRepoObj.Initialize
 func executeInit(cmd *cobra.Command, args []string) {
 	dir, _ := os.Getwd()
 	fmt.Println("Initializing chimp repo at: ", dir)
-	ChimpRepInitializeFn(dir)
+	err := ChimpRepInitializeFn(dir)
+	if err != nil {
+		fmt.Println("An error occurred while creating .chimp directory:", err)
+	}
 }

@@ -9,6 +9,7 @@ type ChimpRepository struct {
 	gitDir   string
 }
 
-func (chimpRepo ChimpRepository) Initialize(path string) {
-	utility.CreateDirectory(path, ".chimp", false)
+func (chimpRepo ChimpRepository) Initialize(path string) error {
+	err := utility.CreateDirectory(path, ".chimp", false)
+	return err
 }

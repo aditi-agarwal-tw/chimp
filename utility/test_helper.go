@@ -2,6 +2,7 @@ package utility
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -30,4 +31,14 @@ func contains(s []interface{}, e interface{}) bool {
 		}
 	}
 	return false
+}
+
+// AssertSubString checks if a string is contained in another
+func AssertSubString(t *testing.T,
+	parent string, subString string, errorMessage string) {
+	if !strings.Contains(parent, subString) {
+		t.Errorf(`Test failed, string: %s, 
+		is not contained in parent string %s, message: %s.`,
+			subString, parent, errorMessage)
+	}
 }
